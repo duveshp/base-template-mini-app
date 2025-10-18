@@ -1,0 +1,21 @@
+   ▲ Next.js 15.3.3
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 14.0s
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./src/app/api/collabs/update-proof/route.ts:31:12
+Type error: Property 'id' does not exist on type '{}'.
+
+[0m [90m 29 |[39m       proofImageUrl [33m||[39m [36mnull[39m[33m,[39m[0m
+[0m [90m 30 |[39m       collabId[33m,[39m[0m
+[0m[31m[1m>[22m[39m[90m 31 |[39m       user[33m.[39mid[0m
+[0m [90m    |[39m            [31m[1m^[22m[39m[0m
+[0m [90m 32 |[39m     )[33m;[39m[0m
+[0m [90m 33 |[39m[0m
+[0m [90m 34 |[39m     [36mif[39m (result[33m.[39mchanges [33m===[39m [35m0[39m) {[0m
+Next.js build worker exited with code: 1 and signal: null
+
