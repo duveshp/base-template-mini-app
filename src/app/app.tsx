@@ -1,15 +1,26 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import { APP_NAME } from "~/lib/constants";
+import { useApp } from '~/contexts/AppContext';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 
-// note: dynamic import is required for components that use the Frame SDK
-const Demo = dynamic(() => import("~/components/Demo"), {
-  ssr: false,
-});
+const Dashboard = dynamic(() => import('~/components/Dashboard'), { ssr: false });
+const Login = dynamic(() => import('~/components/Login'), { ssr: false });
 
-export default function App(
-  { title }: { title?: string } = { title: APP_NAME }
-) {
-  return <Demo title={title} />;
+export default function App() {
+  const { state } = useApp();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.user) {
+      router.push('/dashboard');
+    }
+  }, [state.user, router]);
+
+  if (state.user) {
+    return <Dashboard />;
+  }
+
+  return <Login />;
 }

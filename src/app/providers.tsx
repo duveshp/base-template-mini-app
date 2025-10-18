@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { MiniAppProvider } from "@neynar/react";
+import { AppProvider } from "~/contexts/AppContext";
+import { ThemeProvider } from "~/contexts/ThemeContext";
 
 const WagmiProvider = dynamic(
   () => import("~/components/providers/WagmiProvider"),
@@ -13,7 +15,11 @@ const WagmiProvider = dynamic(
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider>
-      <MiniAppProvider analyticsEnabled={true}>{children}</MiniAppProvider>
+      <MiniAppProvider analyticsEnabled={true}>
+        <ThemeProvider>
+          <AppProvider>{children}</AppProvider>
+        </ThemeProvider>
+      </MiniAppProvider>
     </WagmiProvider>
   );
 }
