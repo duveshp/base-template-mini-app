@@ -1,8 +1,20 @@
 import Database from 'better-sqlite3';
 import { join } from 'path';
 
-const dbPath = join(process.cwd(), 'collab-fun.db');
-const db = new Database(dbPath);
+// Check if running on Vercel (serverless environment)
+const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+
+let db: Database.Database;
+
+if (isVercel) {
+  // Use in-memory database for Vercel
+  console.log('Using in-memory database for Vercel deployment');
+  db = new Database(':memory:');
+} else {
+  // Use file-based database for local development
+  const dbPath = join(process.cwd(), 'collab-fun.db');
+  db = new Database(dbPath);
+}
 
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
@@ -157,5 +169,55 @@ export const getUserBadges = db.prepare(`
   WHERE user_id = ?
   ORDER BY earned_at DESC
 `);
+
+// Initialize with demo data for Vercel (in-memory database)
+if (isVercel) {
+  console.log('Initializing demo data for Vercel...');
+
+  // Create demo user
+  try {
+    createUser.run(
+      12345,
+      '0x1234567890123456789012345678901234567890',
+      'Demo User',
+      null,
+      'User',
+      'Collaboration, Community, Fun'
+    );
+
+    // Create demo collabs
+    const now = new Date();
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    createCollab.run(
+      'Morning Yoga Challenge',
+      '🧘',
+      'Join us for a refreshing morning yoga session! Perfect for all skill levels.',
+      'Fitness',
+      tomorrow.toISOString(),
+      nextWeek.toISOString(),
+      20,
+      1,
+      null
+    );
+
+    createCollab.run(
+      'Book Club: Sci-Fi Month',
+      '📚',
+      'Let\'s read and discuss the best science fiction books together!',
+      'Reading',
+      tomorrow.toISOString(),
+      nextWeek.toISOString(),
+      15,
+      1,
+      null
+    );
+
+    console.log('Demo data initialized successfully');
+  } catch (error) {
+    console.log('Demo data might already exist or error:', error);
+  }
+}
 
 export default db;
