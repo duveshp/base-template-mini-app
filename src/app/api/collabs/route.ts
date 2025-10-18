@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Get user ID from FID (assuming user exists)
     const { getUserByFid } = await import('~/lib/database');
-    const user = getUserByFid.get(fid);
+    const user = getUserByFid.get(fid) as { id: number; name: string } | undefined;
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
